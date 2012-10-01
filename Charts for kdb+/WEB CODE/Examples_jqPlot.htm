@@ -1,0 +1,124 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /><link rel="shortcut icon" href="http://kdbchart.com/favicon.ico" />
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="scripts/jqplot/excanvas.min.js"></script><![endif]-->
+<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script> -->
+<script type="text/javascript" src="scripts/jquery.js"></script>
+<script type="text/javascript" src="scripts/kcOptions.js"></script>
+<script type="text/javascript" src="scripts/kc.js"></script>
+<script type="text/javascript" src="scripts/c.js"></script>
+
+<script type="text/javascript" src="scripts/jqplot/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.ohlcRenderer.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.highlighter.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.cursor.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.bubbleRenderer.min.js"></script>
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.saveAsImage.min.js"></script>
+
+<link type="text/css" href="scripts/jqplot/jquery.jqplot.min.css" rel="stylesheet" media="screen" />
+
+<style type="text/css">.c{width:600px;height:300px;margin:auto;overflow:show;}</style>
+</head>
+<body>
+	<h1>jqPlot</h1>
+	<a href="http://www.jqplot.com/deploy/dist/examples/" target="_blank">http://www.jqplot.com/deploy/dist/examples/ - jqPlot Examples</a>
+	<p>READ THIS FIRST: Flot is significantly quicker at drawing charts and is easier to use than jqPlot. It is recommended that for Area, Line or Point charts that are constantly updating, that you use Flot. However, jqPlot does have more chart types and is more flexible (in dates for example).</p>
+	<p>WORD OF WARNING: jqPlot itself appears to have a problem with being able to cope with any gaps in updating data, for example ten data points with sixty-second difference, and then a data point with sixty-four second difference. If this occurs, the ticks (xaxis labels and vertical grid lines) will start to move about and function very badly. A bug report has been sent to the jqPlot developer.</p>
+	<p><b>Ideally, all updating charts use Flot, and static more complex charts use jqPlot. On an old Mac it takes ~10ms to redraw a Flot chart, and ~40ms to redraw a jqPlot chart.</b></p>
+
+
+	<h2>-Area Chart</h2>
+	<div id="jchart1" class="c"></div>
+	<input id="jchart1_pause" type="button" value="Unpause" />
+	<input id="jchart1_png" type="button" value="Save As PNG" />
+	<p>Note how the chart starts of paused.</p>
+
+	<h2>-Bar Chart</h2>
+	<div id="jchart2" class="c"></div>
+	<input id="jchart2_png" type="button" value="Save As PNG" />
+	<p>This chart has no updatable data, so the Pause/Unpause input is not included.</p>
+
+	<h2>-Bubble Chart</h2>
+	<div id="jchart3" class="c"></div>
+	<input id="jchart3_png" type="button" value="Save As PNG" />
+	<input id="jchart3_print" type="button" value="Print" />
+	<a style="float:right;" href="o/x.png" target="_blank"><img src="o/x.png" width="261" height="150" /></a>
+	<p>This chart has no updatable data, so the Pause/Unpause input is not included. Print button allows one to directly print the chart, or to save to PDF:</p>
+
+	<h2>-Candlestick Chart</h2>
+	<div id="jchart4" class="c"></div>
+	<input id="jchart4_png" type="button" value="Save As PNG" />
+	<p>Much like OHLC below</p>
+
+	<h2>-Line Chart</h2>
+	<div id="jchart5" class="c"></div>
+	<input id="jchart5_pause" type="button" value="Pause" />
+	<input id="jchart5_png" type="button" value="Save As PNG" />
+	<input id="jchart5_print" type="button" value="Print" />
+	<p>Note that the lines have points and are smoothed, as stated in the options supplied for this chart.</p>
+
+	<h2>-OHLC Chart</h2>
+	<div id="jchart6" class="c"></div>
+	<input id="jchart6_png" type="button" value="Save As PNG" />
+	<p>Note that hovering over a stick shows more detail about that datum.</p>
+
+	<h2>-Pie Chart</h2>
+	<div id="jchart7" class="c"></div>
+	<input id="jchart7_png" type="button" value="Save As PNG" />
+	<input id="jchart7_print" type="button" value="Print" />
+	<p>Note that when you hover over this chart, a JavaScript error occurs. This error is in the jqPlot API - it happens because of the highlighter used on charts (when hovering with the cursor in the OHLC above, for example). The Pie chart type has its own which interferes.</p>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$.jqplot.config.enablePlugins=true;
+			KC_WSCreate();
+
+			KC_ChartMake([
+				//jqPlot_Area
+				["kc_line_1","select[-50] 15h$dt,val from kc_line_1","jqPlot_Area","{\
+					axes:{\
+						xaxis:{\
+							renderer:$.jqplot.DateAxisRenderer,\
+							tickOptions:{formatString:'%Y/%m/%d'},\
+						},\
+						axesDefaults:{numberTicks:5,pad:0}\
+					}\
+				}","jchart1","false"],
+
+				//jqPlot_Bar
+				["kc_pie_1","select from kc_pie_1","jqPlot_Bar","{\
+					axes:{\
+						xaxis:{renderer:$.jqplot.CategoryAxisRenderer}\
+					}\
+				}","jchart2","false"],
+
+				//jqPlot_Bubble
+				["kc_bubble_1","select val1,val2,val3,name from kc_bubble_1","jqPlot_Bubble","","jchart3","false"],
+
+				//jqPlot_Candlestick
+				["kc_cc_1","select[-20] 15h$Date,Open,High,Low,Close from kc_cc_1","jqPlot_Candlestick","","jchart4","false"],
+
+				//jqPlot_Line
+				["kc_line_1","select[-50] 15h$dt,val from kc_line_1","jqPlot_Line","{\
+					axes:{\
+						xaxis:{\
+							renderer:$.jqplot.DateAxisRenderer,\
+							tickOptions:{formatString:'%Y/%m/%d'},\
+						},\
+						axesDefaults:{numberTicks:5,pad:0}\
+					}\
+				}","jchart5","true"],
+
+				//jqPlot_OHLC
+				["kc_cc_1","select[-20] 15h$Date,Open,High,Low,Close from kc_cc_1","jqPlot_OHLC","","jchart6","false"],
+
+				//jqPlot_Pie
+				["kc_pie_1","select from kc_pie_1","jqPlot_Pie","","jchart7","false"]
+			]);
+		});
+	</script>
+</body>
+</html>

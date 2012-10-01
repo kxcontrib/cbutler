@@ -1,0 +1,101 @@
+<html>
+<head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /><link rel="shortcut icon" href="http://kdbchart.com/favicon.ico" />
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="scripts/jqplot/excanvas.min.js"></script><![endif]-->
+<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script> -->
+<script type="text/javascript" src="scripts/jquery.js"></script>
+<script type="text/javascript" src="scripts/kcOptions.js"></script>
+<script type="text/javascript" src="scripts/kc.js"></script>
+<script type="text/javascript" src="scripts/c.js"></script>
+
+<script type="text/javascript" src="scripts/flot/jquery.flot.min.js"></script>
+<script type="text/javascript" src="scripts/flot/jquery.flot.pie.min.js"></script>
+<script type="text/javascript" src="scripts/flot/jquery.flot.symbol.min.js"></script>
+<script type="text/javascript" src="scripts/flot/jquery.flot.crosshair.min.js"></script>
+
+<script type="text/javascript" src="scripts/jqplot/plugins/jqplot.saveAsImage.min.js"></script>
+
+<style type="text/css">.c{width:600px;height:300px;margin:auto;overflow:show;}</style>
+</head>
+<body>
+	<h1>Flot</h1>
+	<a href="http://people.iola.dk/olau/flot/examples/" target="_blank">http://people.iola.dk/olau/flot/examples/ - Flot Examples</a>
+	<p>READ THIS FIRST: Flot is significantly quicker at drawing charts and is easier to use than jqPlot. It is recommended that for Area, Line or Point charts that are constantly updating, that you use Flot. However, jqPlot does have more chart types and is more flexible (in dates for example).</p>
+	<p>WORD OF WARNING: jqPlot itself appears to have a problem with being able to cope with any gaps in updating data, for example ten data points with sixty-second difference, and then a data point with sixty-four second difference. If this occurs, the ticks (xaxis labels and vertical grid lines) will start to move about and function very badly. A bug report has been sent to the jqPlot developer. </p>
+	<p><b>Ideally, all updating charts use Flot, and static more complex charts use jqPlot. On an old Mac it takes ~10ms to redraw a Flot chart, and ~40ms to redraw a jqPlot chart.</b></p>
+
+
+
+	<h2>-Area Chart</h2>
+	<div id="fchart1" class="c"></div>
+	<input id="fchart1_pause" type="button" value="Pause" />
+
+	<h2>-Bar Chart</h2>
+	<div id="fchart2" class="c"></div>
+	<input id="fchart2_pause" type="button" value="Unpause" />
+
+	<h2>-Line Chart</h2>
+	<div id="fchart3" class="c"></div>
+	<input id="fchart3_pause" type="button" value="Pause" />
+
+	<h2>-Line Points Chart</h2>
+	<div id="fchart4" class="c"></div>
+	<input id="fchart4_pause" type="button" value="Pause" />
+
+	<h2>-Points Chart</h2>
+	<div id="fchart5" class="c"></div>
+	<input id="fchart_pause5" type="button" value="Pause" />
+
+	<h2>-Steps Chart</h2>
+	<div id="fchart6" class="c"></div>
+	<input id="fchart_pause6" type="button" value="Pause" />
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			KC_WSCreate();
+
+			KC_ChartMake([
+				//Flot_Area
+				["kc_line_1","select[-60] .kc.JSTS[dt],val from kc_line_1","Flot_Area","{\
+					xaxis:{mode:'time'},\
+					yaxis:{min:270},\
+				}","fchart1","true"],
+
+				//Flot_Bar
+				["kc_line_1","select[-20] .kc.JSTS[dt],val from kc_line_1","Flot_Bar","{\
+					xaxis:{mode:'time',position:'top'},\
+					yaxis:{min:0,max:400,position:'right'},\
+					series:{\
+						bars:{lineWidth:2,barWidth:500}\
+					}\
+				}","fchart2","false"],
+
+				//Flot_Line
+				["kc_line_1","select[-60] .kc.JSTS[dt],val from kc_line_1","Flot_Line","{\
+					xaxis:{mode:'time'}\
+				}","fchart3","true"],
+
+				//Flot_LinePoints
+				["kc_line_1","select[-60] .kc.JSTS[dt],val from kc_line_1","Flot_LinePoints","{\
+					xaxis:{mode:'time'},\
+					points:{symbol:'square',radius:1}\
+				}","fchart4","true"],
+
+				//Flot_Points
+				["kc_line_1","select[-30] .kc.JSTS[dt],val from kc_line_1","Flot_Points","{\
+					xaxis:{mode:'time'},\
+					points:{symbol:'cross',radius:5},\
+					crosshair:{mode:'x'},\
+					grid:{hoverable:true,autoHighlight:false}\
+				}","fchart5","true"],
+
+				//Flot_Steps
+				["kc_line_1","select[-30] .kc.JSTS[dt],val from kc_line_1","Flot_Steps","{\
+					xaxis:{mode:'time'},\
+					yaxis:{min:270},\
+					lines:{fill:true}\
+				}","fchart6","true"]
+			]);
+		});
+	</script>
+</body>
+</html>
