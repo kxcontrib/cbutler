@@ -1,0 +1,172 @@
+<!DOCTYPE HTML><html><head><title>Charts for kdb+ © 2012 Carlos Butler</title><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /><link rel="shortcut icon" href="http://kdbchart.com/favicon.ico" /><style type="text/css">@charset"UTF-8";@import url(http://fonts.googleapis.com/css?family=Ubuntu);@import url(http://fonts.googleapis.com/css?family=Nothing+You+Could+Do);body,div,ul,ol,li,h1,h2,h3,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td{margin:0;padding:0;}body{border:0;background-color:rgb(102,102,102);font-family:"Lucida Grande","Helvetica Neue",Helvetica,sans-serif;color:rgb(30,30,30);font-size:12px;margin:auto;padding:0;}a{text-decoration:none;outline:none;color:rgb(125,125,125);}a:hover,a:focus{color:rgb(125,125,125);text-decoration:underline;}p{margin:5px auto;}pre{-moz-tab-size:4;tab-size:4;background-color:rgb(225,225,225);border:1px dotted rgb(180,180,190);border-left:8px solid rgb(180,180,190);font-family:"Courier New",Courier,monospace;color:rgb(34,139,34);word-wrap:break-word;white-space:pre-wrap;margin:10px auto;padding:5px;}h1{font-family:Ubuntu,sans-serif;font-size:45px;color:rgb(40,40,40);text-shadow:0 1px 0 rgba(255,255,255,.4);text-align:center;margin:10px 0 3px;}.h1L,.h1L a:link,.h1L a:visited,.h1L a:hover,.h1L a:active{font-family:"Nothing You Could Do",monospace;font-size:15px;color:rgb(255,169,0);text-align:center;}h2{color:rgb(50,50,50);text-shadow:0 1px 0 rgba(255,255,255,.5);}li{margin-left:20px;color:rgb(60,60,60);}#t{float:left;position:absolute;top:5px;left:10px;}#t,#t a:link,#t a:visited,#t a:hover,#t a:active{color:rgb(30,30,30);}#m{width:900px;background-color:rgb(245,245,245);border-radius:6px;box-shadow:0 0 9px rgb(25,25,25);margin:20px auto 60px;padding:10px;}#f{width:100%;height:30px;line-height:30px;position:fixed;bottom:0;background-color:rgb(35,30,30);}#f p{width:900px;text-align:right;font-style:italic;font-size:12px;margin:0 auto;}#f,#f a:link,#f a:visited,#f a:hover,#f a:active{color:rgb(245,245,245);}.h1L a:hover,.h1L a:active,#f a:hover,#f a:active{text-decoration:underline;}.w{background-color:#fbf5d0;border:1px solid #f9dd34;border-left:8px solid rgb(255,69,0);color:#363636;margin:10px auto;padding:5px;}</style>
+
+	<script type="text/javascript" src="scripts/jquery.js"></script>
+	<script type="text/javascript" src="scripts/kc.js"></script>
+	<script type="text/javascript" src="scripts/c.js"></script>
+</head>
+<body><div id="t"><p>Last update: 1<sup>st</sup> October 2012</p><p>- <a href="http://code.kx.com/" target="_blank">code.kx</a> - <a href="http://code.kx.com/wiki/Contrib#Carlos_Butler" target="_blank">contrib</a></p><p>- <a href="https://bitbucket.org/carlosbutler/charts-for-kdb" target="_blank">bitbucket</a></p><!--<p>- <a href="http://carlosbutler.com/downloads" target="_blank">carlosbutler.com/downloads</a></p>--></div><h1>Charts for kdb+ v2.0</h1><div class="h1L"><a href="http://www.carlosbutler.com" target="_blank">&copy; Carlos Butler</a></div><div id="m"><style type="text/css">.c{width:600px;height:400px;margin:auto;}</style>
+
+<h2>Explanation</h2><p>
+
+	Charts for kdb+ allows you to quickly and easily create charts, both static and real-time updating, with data from a Q server. After including all required files, charts can be called by sending a nested JavaScript array to the function KC_ChartMake:
+<pre>
+KC_ChartMake([["tbl_data","select[-10] from tbl_data","Flot_Line","{axes:{xaxis:...}}","chart1","true"]])
+
+[0] "tbl_data": -- Which table to depend upon for updating this chart (i.e. when this table updates, the chart will also update even if the table is not used in the query)
+[1]: "select..." -- The query to base this chart upon
+[2]: "Flot_Line" -- The type of chart
+[3]: "{axes:..." -- JavaScript object which contains options for this chart
+[4]: "chart1" -- Which div element to place the chart in
+[5]: "true" -- Whether the chart should update when the table in the Q session changes
+</pre>
+</p>
+<div class="w">NOTE: Charts will not load until the JavaScript file has been configured (see section 2 - Settings and Loading Charts) and a Q server has loaded kc.q</div>
+
+<br />
+
+<h2>1 Installation</h2>
+<p><b>1a HTML and JavaScript</b><br />
+You need to include these files in your &lt;head&gt; tag.
+<pre>
+&lt;head&gt;
+&lt;script type="text/javascript" src="scripts/jquery.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/kcOptions.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/kc.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/c.js"&gt;&lt;/script&gt;
+
+&lt;!-- Flot --&gt;
+&lt;script type="text/javascript" src="scripts/flot/jquery.flot.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- jqPlot --&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/jquery.jqplot.min.js"&gt;&lt;/script&gt;
+
+&lt;link type="text/css" href="scripts/jqplot/jquery.jqplot.min.css" rel="stylesheet" media="screen" /&gt;
+&lt;/head&gt;
+</pre>
+
+A DIV element is used as a container for a chart. You must set a width and height for the DIV, an give it an ID.
+<pre>
+&lt;body&gt;
+&lt;div id="chart1" style="width:600px;height:400px;margin:auto"&gt;&lt;/div&gt;
+&lt;input id="chart1_pause" type="button" value="Pause" /&gt;
+&lt;input id="chart1_png" type="button" value="Save As PNG" /&gt;
+&lt;input id="chart1_print" type="button" value="Print" /&gt;
+&lt;/body&gt;
+</pre>
+The 2<sup>nd</sup>, 3<sup>rd</sup> and 4<sup>th</sup> lines above are buttons that allow the user to <i>Pause</i>, <i>Save As PNG</i> and <i>Print</i>, respectively. Some of the time, the buttons may not be useful or should be shown, for example: a bubble chart that has no live updating data should not display the <i>Pause</i> button. The API will bind JavaScript functions to these buttons, and the ID of the buttons must in the exact form <i>id="chartID_(pause|png|print)"</i>. If the inputs are not specified (or they have incorrect ID's) the API will not try to bind to a non-existing item.<br /><br />
+
+<b>1b Q</b><br />
+You will need to load kc.q in to your Q session as well, which will load/create test data for this example.
+<pre>
+KDB+ 3.0 2012.08.07 Copyright (C) 1993-2012 Kx Systems
+m32/ 8()core 4096MB carlosbutler carloss-mbp.local 192.168.0.2 PLAY 2012.11.05 
+
+q)\l kc/kc.q
+</pre>
+<br />
+
+<h2>2 Settings and Loading Charts</h2>
+<p><b>2a Setting Constants</b><br />
+There are three CONSTANTS in kc.js that must be looked at before any charts will load.
+<pre>
+var KC_IN_DEV=true, // change to false when not in development, doing so will stop any warning and error messages
+KC_Q_SERVER_URL="192.168.0.2:5001", // use only the IP address and port number for the q server
+KC_WS_SECURE=false, // using a secure WebSocket connection?
+</pre>
+
+There is also one CONSTANT that should be looked at in the Q code, in kc.q (near the top).
+<pre>
+.kc.uf:200*(10 xexp 6) /limit update frequency of charts in nanoseconds ^9
+</pre>
+
+You should now have the scripts added to the webpage, and at least one DIV element ready to accept a chart. kc.js should now also contain the correct IP address (and port) to access the Q server.<br /><br />
+
+<b>2b Options</b><br />
+You can specify options in <b>kcOptions.js</b> → <b>KC_ChartOptions()</b> → <b>4<sup>th</sup> (index 3) of the KC_ChartMake() input array</b>. Note the direction of the arrows - think of them as options being passed from each layer to another, from left to right.
+<div class="w">WARNING: Each following layer will overwrite the options set in the previous layer.</div>
+<b>kcOptions.js↲</b> - Options stated here are applied to every chart of any type<br />
+<b>↳KC_ChartOptions()↲</b> - Options stated here are applied individually to each type of chart<br />
+<b>↳KC_ChartMake()⇥</b> - Options stated here are applied only to the one chart<br /><br />
+
+<b>2c Chart Scripts</b><br />
+Most of the chart types require at least one additional JavaScript file to be included, the includes stated below are the same as those in the Example_*.html files. You may end up needing to use other ones.
+<pre>
+&lt;head&gt;
+&lt;!-- Some of the extra Flot scripts available --&gt;
+&lt;script type="text/javascript" src="scripts/flot/jquery.flot.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/flot/jquery.flot.pie.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/flot/jquery.flot.symbol.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/flot/jquery.flot.crosshair.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Some of the extra jqPlot scripts available --&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/jquery.jqplot.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.pieRenderer.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.dateAxisRenderer.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.ohlcRenderer.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.highlighter.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.cursor.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.barRenderer.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.bubbleRenderer.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="scripts/jqplot/plugins/jqplot.saveAsImage.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+</pre>
+There are many more, look in the <b>./scripts/</b> folder to see them all. <b>KC_ChartOptions()</b> function in <b>kc.js</b> explains the includes are required.
+
+<br /><br />
+
+<b>2d Loading Charts</b><br />
+Copy this in to a webpage to see the chart. 
+<pre>
+&lt;script type="text/javascript"&gt;
+$(document).ready(function(){
+	// creates a WebSocket connection to the Q server
+	KC_WSCreate();
+
+	KC_ChartMake([
+		// kc_line_1 is test data from td.q
+		["kc_line_1","select[-60] .kc.JSTS[dt],val from kc_line_1","Flot_Line","{\
+			xaxis:{mode:'time'}\
+		}","chart1","true"],
+	]);
+});
+&lt;/script&gt;
+</pre>
+<div class="w">
+NOTE: You may place the above code anywhere on a page, although it is recommended that you always use a DOMReady method, as shown.<br /><br />
+Any dates must be converted to a JavaScript time stamp using .kc.JSTS for Flot charts, or cast to 15h/z/`datetime for jqPlot charts. You may have noticed that the above <i>select</i> statement selects the last sixty rows ([-60]). This means that sixty points of data will be displayed at any time (inclusive of updating charts).
+</div>
+
+When a table is updated in Q, the most recent line from the table is sent to the browser which in turn is added to the chart (as long as the time between the updates is greater than .kc.uf, see section 2a) removing the oldest piece of data. There are many different chart styles and behaviour options available that can be specified to all charts, all charts of a specific type or specific charts (see section 2b).<br /><br />
+
+
+<div style="width:665px;height:304px;margin:auto;text-align:center;">You should be able to see this chart<img src="o/z.png" alt="chart" width="665" height="304" /></div>
+</p>
+
+<br />
+
+<h2>3 Try It Out and Chart Examples</h2>
+<p>Now that you know how to load charts and data, you may want to see all the chart types and some of the options available to you: <a href="Examples_Flot.htm" target="_blank">Flot</a> | <a href="Examples_jqPlot.htm" target="_blank">jqPlot</a><br />
+<!-- <div style="width:800px;height:450px;margin:auto;"> -->
+<!-- <iframe width="800" height="450" src="" frameborder="0" allowfullscreen></iframe> -->
+<!-- </div> -->
+</p>
+
+<br />
+
+<h2>4 Suggestions and Bugs</h2>
+<p>A ticket system has been setup here: <a href="https://bitbucket.org/carlosbutler/charts-for-kdb" target="_blank">https://bitbucket.org/carlosbutler/charts-for-kdb</a>. Please post whatever suggestion you may have their so others may see it, otherwise email <a href="mailto:c@butler.cc">c@butler.cc</a> and they will be added.<br /><br />
+</p>
+
+<h2>5 Agreements</h2>
+<p><ul>
+	<li>You may redistribute this code as long as a copyright notice, Copyright (c) Carlos Butler 2012, is in sight (comment in code, for example).</li>
+	<li>You may alter as you wish and redistribute, as long as rule one is adhered to.</li>
+	<li>I [Carlos Butler] am not responsible for any unwanted side effects that may occur from the use of this software.</li>
+</ul><br />
+</p>
+
+<h2>6 Examples of Charts Available</h2>
+<p>Click these: <a href="Examples_Flot.htm" target="_blank">Flot</a> | <a href="Examples_jqPlot.htm" target="_blank">jqPlot</a></p>
+
+</div></body></html>

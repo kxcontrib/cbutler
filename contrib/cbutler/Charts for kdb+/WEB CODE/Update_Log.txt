@@ -1,0 +1,33 @@
+Update Log
+
+Charts for kdb+ v2.0
+Copyright 2012, Carlos Butler
+Released under the MIT and GNU GPL licenses.
+For any issues or requests, go to https://bitbucket.org/carlosbutler/charts-for-kdb
+
+==================================================
+v0.2.0 - 2012/10/01
+==================================================
+- Added live updating charts
+- Added Flot and jqPlot charting API's as a replacement for Google Charts API. They are lighter and quicker to load than Google.
+- Added many other supporting functions
+- Ability to save charts as images
+- Ability to print charts directly
+- Ability to pause updating charts
+- Created https://bitbucket.org/carlosbutler/charts-for-kdb to replace http://code.google.com/p/kdbchart/
+
+- Changed the CSVtoJSONRowArray function so that it actually works as intended this time round. As an addition, it now allows one to state as two extra parameters:
+* whether the CSV has column names
+* should the column names be returned
+* The parser is more thorough with data types now
+- Changed the Instructions webpage, and added more detail
+- Changed the name of the API from KdbChart to Charts for kdb+
+- Changed logo
+
+- Removed Google Charts API as this has no live update features. Attempting to redraw the graph by loading it again created flickering charts.
+- Stop use of http://code.google.com/p/kdbchart/
+
+==================================================
+v0.1.0 - 2012/08/09
+==================================================
+Initial release
