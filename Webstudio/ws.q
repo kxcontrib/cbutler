@@ -1,6 +1,6 @@
 /
 * Webstudio for kdb+
-* ws.q v1.01
+* ws.q v1.0.2
 * Copyright 2012, Carlos Butler
 * Released as closed-source freeware
 * For any issues or requests, go to http://bitbucket.org/carlosbutler/webstudio-for-kdb
@@ -8,13 +8,30 @@
 * Last Modified: 21st Nov 2012
 \
 
-.z.ws:{neg[.z.w] @[{-8!value -9!x};x;{@[-8!0N!`$x;1 8;:;0x0280]}];}
-.ws.v:"1.0.1";
+.ws.rs:{[size]
+	$[
+		/5MB
+		size=5;[.z.ws:{neg[.z.w] @[{{$[5242880<count x;'"Results too big";x]} -8!value -9!x};x;{@[-8!`$x;1 8;:;0x0280]}];}];
+		
+		/1MB
+		size=1;[.z.ws:{neg[.z.w] @[{{$[1048576<count x;'"Results too big";x]} -8!value -9!x};x;{@[-8!`$x;1 8;:;0x0280]}];}];
+		
+		/0.5MB
+		size=0.5;[.z.ws:{neg[.z.w] @[{{$[524288<count x;'"Results too big";x]} -8!value -9!x};x;{@[-8!`$x;1 8;:;0x0280]}];}];
+		
+		/0.25MB
+		size=0.25;[.z.ws:{neg[.z.w] @[{{$[262144<count x;'"Results too big";x]} -8!value -9!x};x;{@[-8!`$x;1 8;:;0x0280]}];}];
+		
+		/0.1MB
+		size=0.1;[.z.ws:{neg[.z.w] @[{{$[104858<count x;'"Results too big";x]} -8!value -9!x};x;{@[-8!`$x;1 8;:;0x0280]}];}];
+	];
+	}
+.ws.rs[0.5]; /default
+.ws.v:"1.0.2";
 
 /
 * Everthing below is from Charts for kdb+ API
 \
-
 /
 * Charts for kdb+ v2.0
 * Copyright 2012, Carlos Butler
