@@ -1,12 +1,12 @@
 /
 * Webstudio for kdb+
-* Copyright 2012, Carlos Butler
+* Copyright 2012-2013, Carlos Butler
 * Released as closed-source free ware
 * For any issues or requests, go to http://bitbucket.org/carlosbutler/webstudio-for-kdb
 * ==================================================
-* Last Modified: 1st Dec 2012
+* Last Modified: 24th Feb 2013
 \
-
+\p 5001
 / Check if outdated
 .ws.outdated:{
 	p:"\r\n\r\n"; /pattern to remove header info
@@ -18,12 +18,12 @@
 .ws.rs:{
 	$[
 		(type x)=-7h;.z.ws:{neg[.z.w]@[{{$[x<count y;'"Results too big";y]}[x] -8!value -9!y}x;y;{@[-8!`$x;1 8;:;0x0280]}];}x;
-		(x~"large")|(x~"massimo");.ws.rs[5242880]; / 5MB
-		(x~"medium")|(x~"medio");.ws.rs[524288];  / .5MB
-		(x~"small")|(x~"primo");.ws.rs[209715];   / .2MB
+		x~"large";.ws.rs[5242880];  / 5MB
+		x~"medium";.ws.rs[524288];  / .5MB
+		x~"small";.ws.rs[209715];   / .2MB
 	];
 	}
-.ws.rs["medio"]; / Set default maximum return size
+.ws.rs["medium"]; / Set default maximum return size
 
 /
 * Everthing below is from Charts for kdb+ API
